@@ -4,7 +4,7 @@
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import logo from "../images/download.png"
+import logo from "../images/logo1.png"
 
 export default function ClassicHeader() {
   const [menuOpen, setMenuOpen] = useState(false);
