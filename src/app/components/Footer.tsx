@@ -22,9 +22,9 @@ export default function Footer() {
                     <h3 className="text-lg font-semibold mb-3">Quick Links</h3>
                     <ul className="space-y-2">
                         <li><Link href="/" className="hover:text-white">Home</Link></li>
-                        <li><Link href="/about" className="hover:text-white">About Us</Link></li>
                         <li><Link href="/services" className="hover:text-white">Services</Link></li>
-                        <li><Link href="/portfolio" className="hover:text-white">Portfolio</Link></li>
+                        <li><Link href="/ourwork" className="hover:text-white">Our Work</Link></li>
+                        <li><Link href="/client" className="hover:text-white">Client</Link></li>
                         <li><Link href="/contact" className="hover:text-white">Contact</Link></li>
                     </ul>
                 </div>
@@ -51,18 +51,7 @@ export default function Footer() {
                 </div>
             </div>
 
-            {/* Newsletter Signup */}
-            <div className="mt-4 flex space-x-4 text-blue-600 text-2xl">
-                <Link href="https://instagram.com" target="_blank" className="hover:text-pink-500">
-                    <FaInstagram />
-                </Link>
-                <Link href="https://linkedin.com" target="_blank" className="hover:text-blue-700">
-                    <FaLinkedin />
-                </Link>
-                <Link href="https://twitter.com" target="_blank" className="hover:text-blue-400">
-                    <FaTwitter />
-                </Link>
-            </div>
+     
 
             {/* Copyright */}
             <div className="mt-6 text-center text-sm text-gray-500">
