@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { FaPhoneAlt, FaEnvelope, FaMapMarkerAlt } from "react-icons/fa";
+import { FaPhoneAlt, FaEnvelope } from "react-icons/fa";
 
 const ContactUs = () => {
   const [formData, setFormData] = useState({ name: "", email: "", message: "" });
@@ -11,15 +11,18 @@ const ContactUs = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setStatus("Sending...");
 
-    // Simulate API call
+    // Here, we'll just log the form data instead of making an API call
+    console.log("Form Data Submitted:", formData);
+
+    // Simulate a success message
     setTimeout(() => {
       setStatus("Message sent successfully!");
       setFormData({ name: "", email: "", message: "" });
-    }, 2000);
+    }, 1500); // Simulate a delay for success message
   };
 
   return (
@@ -35,15 +38,11 @@ const ContactUs = () => {
           <div className="space-y-4">
             <p className="flex items-center space-x-3 text-gray-600">
               <FaPhoneAlt className="text-blue-500" />
-              <span>+1 234 567 890</span>
+              <span>+91 8310531309</span>
             </p>
             <p className="flex items-center space-x-3 text-gray-600">
               <FaEnvelope className="text-red-500" />
-              <span>info@example.com</span>
-            </p>
-            <p className="flex items-center space-x-3 text-gray-600">
-              <FaMapMarkerAlt className="text-green-500" />
-              <span>123 Business St, City, Country</span>
+              <span>jcrm.in</span>
             </p>
           </div>
         </div>

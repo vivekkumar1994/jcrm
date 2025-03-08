@@ -25,6 +25,7 @@ export default function ClassicHeader() {
             <Link href="/ourwork" onClick={() => setMenuOpen(false)}>Our Works</Link>
             <Link href="/client" onClick={() => setMenuOpen(false)}>Clients</Link>
             <Link href="/contact-us" onClick={() => setMenuOpen(false)}>Contact</Link>
+            <Link href="/registration" onClick={() => setMenuOpen(false)}>Registration</Link>
         </nav>
 
         {/* Mobile Menu Button */}
@@ -43,6 +44,7 @@ export default function ClassicHeader() {
             <Link href="/ourwork" onClick={() => setMenuOpen(false)}>Our Works</Link>
             <Link href="/client" onClick={() => setMenuOpen(false)}>Clients</Link>
             <Link href="/contact-us" onClick={() => setMenuOpen(false)}>Contact</Link>
+            <Link href="/registration" onClick={() => setMenuOpen(false)}>Registration</Link>
           </nav>
         </div>
       )}
