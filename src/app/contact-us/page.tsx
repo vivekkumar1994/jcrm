@@ -26,7 +26,7 @@ const ContactUs = () => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center py-20 px-6 bg-gray-100 min-h-screen">
+    <div className="flex flex-col items-center justify-center py-20 px-6 bg-gray-100 min-h-screen mt-10">
       <h1 className="text-4xl font-bold text-gray-800 mb-6">Contact Us</h1>
       <p className="text-lg text-gray-600 text-center max-w-xl">
         Have any questions? Feel free to reach out to us, and we’ll get back to you as soon as possible.

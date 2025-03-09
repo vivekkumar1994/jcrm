@@ -126,7 +126,7 @@ const RegisterForm = () => {
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gradient-to-r from-blue-50 to-blue-200">
+    <div className="flex justify-center items-center min-h-screen bg-gradient-to-r from-blue-50 to-blue-200 mt-25">
       <motion.form
         onSubmit={handleSubmit}
         initial={{ opacity: 0, y: 50 }}
