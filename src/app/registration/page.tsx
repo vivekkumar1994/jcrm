@@ -4,9 +4,6 @@ import React, { useState } from "react";
 import { motion } from "framer-motion";
 
 interface FormData {
- 
- 
- 
   name: string;
   email: string;
   phone: string;
@@ -29,7 +26,20 @@ interface FormData {
   courseType: string;
   additionalInfo: string;
   references: string;
+  professionalRole: string;
 }
+
+const professionalRoles = [
+  "Frontend Developer",
+  "Backend Developer",
+  "Full Stack Developer",
+  "Node.js Developer",
+  "Python Developer",
+  "Graphic Designer",
+  "UI/UX Designer",
+  "Data Scientist",
+  "Project Manager",
+];
 
 const RegisterForm = () => {
   const [formData, setFormData] = useState<FormData>({
@@ -54,24 +64,29 @@ const RegisterForm = () => {
     gender: "",
     courseType: "",
     additionalInfo: "",
-    references: ""
+    references: "",
+    professionalRole: "",
   });
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >
+  ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  // const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-  //   const { name, files } = e.target;
-  //   if (files && files.length > 0) {
-  //     if (name === "certificates") {
-  //       setFormData((prev) => ({ ...prev, certificates: Array.from(files) }));
-  //     } else if (name === "resume" || name === "portfolio") {
-  //       setFormData((prev) => ({ ...prev, [name]: files[0] }));
-  //     }
-  //   }
-  // };
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, files } = e.target;
+    if (files && files.length > 0) {
+      if (name === "certificates") {
+        setFormData((prev) => ({ ...prev, certificates: Array.from(files) }));
+      } else if (name === "resume" || name === "portfolio") {
+        setFormData((prev) => ({ ...prev, [name]: files[0] }));
+      }
+    }
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -117,7 +132,8 @@ const RegisterForm = () => {
           gender: "",
           courseType: "",
           additionalInfo: "",
-          references: ""
+          references: "",
+          professionalRole: "",
         });
       })
       .catch(() => {
@@ -135,26 +151,58 @@ const RegisterForm = () => {
         className="bg-white p-8 rounded-2xl shadow-xl space-y-6 max-w-4xl w-full"
         encType="multipart/form-data"
       >
-        <h2 className="text-3xl font-semibold text-gray-700 mb-4">Internship Registration Form</h2>
+        <h2 className="text-3xl font-semibold text-gray-700 mb-4">Registration</h2>
         <div className="grid grid-cols-2 gap-6">
-          {Object.keys(formData).map((field) => (
-            <motion.input
-              key={field}
-              type={field === 'email' ? 'email' : field === 'phone' ? 'tel' : field === 'graduationYear' ? 'number' : 'text'}
-              name={field}
-              placeholder={field.charAt(0).toUpperCase() + field.slice(1).replace(/([A-Z])/g, ' $1')}
-              onChange={handleChange}
-              className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              required
-              whileHover={{ scale: 1.05 }}
-            />
-          ))}
+          {Object.keys(formData).map((field) => {
+            if (field === "professionalRole") {
+              return (
+                <select
+                  key={field}
+                  name={field}
+                  onChange={handleChange}
+                  className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  required
+                >
+                  <option value="">Select Professional Role</option>
+                  {professionalRoles.map((role) => (
+                    <option key={role} value={role}>
+                      {role}
+                    </option>
+                  ))}
+                </select>
+              );
+            }
+            if (field === "resume") {
+              return (
+                <div key={field} className="col-span-2">
+                  <h3 className="text-lg font-medium mb-2">Upload Resume</h3>
+                  <input
+                    type="file"
+                    name={field}
+                    accept=".pdf,.doc,.docx"
+                    onChange={handleFileChange}
+                    className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    required
+                  />
+                </div>
+              );
+            }
+            return (
+              <input
+                key={field}
+                type="text"
+                name={field}
+                placeholder={field}
+                onChange={handleChange}
+                className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                required
+              />
+            );
+          })}
         </div>
         <motion.button
           type="submit"
           className="w-full bg-gradient-to-r from-green-400 to-blue-500 text-white p-3 rounded-lg mt-6 shadow-md hover:shadow-lg transition-transform transform hover:scale-105"
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
         >
           Submit
         </motion.button>
