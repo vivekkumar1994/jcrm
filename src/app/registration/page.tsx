@@ -4,6 +4,9 @@ import React, { useState } from "react";
 import { motion } from "framer-motion";
 
 interface FormData {
+ 
+ 
+ 
   name: string;
   email: string;
   phone: string;
