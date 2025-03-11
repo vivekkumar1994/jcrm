@@ -2,6 +2,10 @@
 
 import React, { useState } from "react";
 import { motion } from "framer-motion";
+import { useRouter } from "next/navigation";
+
+
+
 
 interface FormData {
   name: string;
@@ -25,7 +29,7 @@ interface FormData {
   gender: string;
   courseType: string;
   additionalInfo: string;
-  references: string;
+  reference: string;
   professionalRole: string;
 }
 
@@ -42,6 +46,7 @@ const professionalRoles = [
 ];
 
 const RegisterForm = () => {
+  const router = useRouter();
   const [formData, setFormData] = useState<FormData>({
     name: "",
     email: "",
@@ -64,7 +69,7 @@ const RegisterForm = () => {
     gender: "",
     courseType: "",
     additionalInfo: "",
-    references: "",
+    reference: "",
     professionalRole: "",
   });
 
@@ -117,7 +122,10 @@ const RegisterForm = () => {
 
       const result = await response.json();
       if (response.ok) {
-        setMessage("Registration successful!");
+        setMessage("Registration successful! Redirecting...");
+        setTimeout(() => {
+          router.push("/"); // Redirect to the home page
+        }, 2000);
         setFormData({
           name: "",
           email: "",
@@ -140,7 +148,7 @@ const RegisterForm = () => {
           gender: "",
           courseType: "",
           additionalInfo: "",
-          references: "",
+          reference: "",
           professionalRole: "",
         });
       } else {

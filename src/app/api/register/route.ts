@@ -33,18 +33,15 @@ export async function POST(req: NextRequest) {
 
     return new Promise(async (resolve, reject) => {
       try {
-        // ✅ Convert `req.body` to a Node.js readable stream
         console.log("📌 Converting request body to stream...");
         const bodyStream = Readable.from(Buffer.from(await req.arrayBuffer()));
 
-        // ✅ Initialize Busboy
         console.log("📌 Initializing Busboy...");
         const busboy = Busboy({ headers: Object.fromEntries(req.headers) });
 
         const fields: { [key: string]: string } = {};
         const files: { [key: string]: string } = {};
 
-        // ✅ **Handle File Upload**
         busboy.on("file", async (fieldname, file, { filename }) => {
           console.log(`📁 Uploading file: ${filename}`);
           const saveTo = path.join(uploadDir, `${Date.now()}-${filename}`);
@@ -52,36 +49,24 @@ export async function POST(req: NextRequest) {
 
           try {
             await pipeline(file, writeStream);
-            files[fieldname] = saveTo.replace(process.cwd(), ""); // Store relative file path
+            files[fieldname] = saveTo.replace(process.cwd(), "");
           } catch (err) {
             console.error("❌ File upload error:", err);
             reject(NextResponse.json({ error: "File upload failed" }, { status: 500 }));
           }
         });
 
-        // ✅ **Handle Form Fields**
         busboy.on("field", (name, value) => {
           console.log(`📝 Received field: ${name} = ${value}`);
           fields[name] = value;
         });
 
-        // ✅ **Finish Parsing**
         busboy.on("finish", async () => {
           console.log("✅ File upload & form parsing complete!");
 
-          const { name, email, phone, address, city, state } = fields;
-          if (!name || !email || !phone) {
-            console.error("❌ Missing required fields:", fields);
-            return resolve(NextResponse.json({ error: "Missing required fields" }, { status: 400 }));
-          }
+          const sql = `INSERT INTO register (name, email, phone, address, city, state, qualification, university, graduationYear, skills, experience, availability, preferredLocation, linkedinProfile, githubProfile, resume, portfolio, certificates, gender, courseType, additionalInfo, reference, professionalRole) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
 
-          // Get uploaded file paths
-          const aadhar = files["aadhar"] || null;
-          const marksheets = files["marksheets"] ? files["marksheets"].toString() : null;
-
-          console.log("📝 Inserting into database...");
-          const sql = `INSERT INTO registrations (name, email, phone, address, city, state, aadhar, marksheets) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`;
-          const values = [name, email, phone, address, city, state, aadhar, marksheets];
+          const values = Object.values(fields);
 
           try {
             const [result]: any = await pool.execute(sql, values);
@@ -93,7 +78,6 @@ export async function POST(req: NextRequest) {
           }
         });
 
-        // ✅ **Pipe the stream to Busboy**
         bodyStream.pipe(busboy);
       } catch (err) {
         console.error("❌ Critical Error in Promise:", err);
@@ -103,5 +87,49 @@ export async function POST(req: NextRequest) {
   } catch (error) {
     console.error("❌ Upload error:", error);
     return NextResponse.json({ error: "Server error" }, { status: 500 });
+  }
+}
+
+export async function GET() {
+  try {
+    const [rows]: any = await pool.query("SELECT * FROM register");
+    return NextResponse.json(rows);
+  } catch (error) {
+    console.error("❌ Database Error:", error);
+    return NextResponse.json({ error: "Database error" }, { status: 500 });
+  }
+}
+
+export async function PUT(req: NextRequest) {
+  try {
+    const data = await req.json();
+    const { id, ...fields } = data;
+    const updates = Object.keys(fields).map(key => `${key} = ?`).join(", ");
+    const values = [...Object.values(fields), id];
+
+    const sql = `UPDATE register SET ${updates} WHERE id = ?`;
+    await pool.execute(sql, values);
+
+    return NextResponse.json({ message: "Update successful" });
+  } catch (error) {
+    console.error("❌ Database Error:", error);
+    return NextResponse.json({ error: "Database error" }, { status: 500 });
+  }
+}
+
+export async function DELETE(req: NextRequest) {
+  try {
+    const { id } = await req.json();
+    if (!id) {
+      return NextResponse.json({ error: "Missing ID" }, { status: 400 });
+    }
+
+    const sql = "DELETE FROM register WHERE id = ?";
+    await pool.execute(sql, [id]);
+
+    return NextResponse.json({ message: "Deletion successful" });
+  } catch (error) {
+    console.error("❌ Database Error:", error);
+    return NextResponse.json({ error: "Database error" }, { status: 500 });
   }
 }
