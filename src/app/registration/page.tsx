@@ -14,6 +14,9 @@ const RegisterForm = () => {
     marksheets: [] as File[],
   });
 
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState("");
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
@@ -30,25 +33,55 @@ const RegisterForm = () => {
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setLoading(true);
+    setMessage("");
 
-    // Log the form data to the console or handle it as needed
-    console.log("Form data submitted:", formData);
+    const formDataToSend = new FormData();
+    formDataToSend.append("name", formData.name);
+    formDataToSend.append("email", formData.email);
+    formDataToSend.append("phone", formData.phone);
+    formDataToSend.append("address", formData.address);
+    formDataToSend.append("city", formData.city);
+    formDataToSend.append("state", formData.state);
+    
+    if (formData.aadhar) {
+      formDataToSend.append("aadhar", formData.aadhar);
+    }
 
-    // You can reset the form data after submission
-    setFormData({
-      name: "",
-      email: "",
-      phone: "",
-      address: "",
-      city: "",
-      state: "",
-      aadhar: null,
-      marksheets: [],
+    formData.marksheets.forEach((file) => {
+      formDataToSend.append("marksheets", file);
     });
 
-    alert("Registration successful!");
+    try {
+      const response = await fetch("/api/register", {
+        method: "POST",
+        body: formDataToSend,
+      });
+
+      const result = await response.json();
+      if (response.ok) {
+        setMessage("Registration successful!");
+        setFormData({
+          name: "",
+          email: "",
+          phone: "",
+          address: "",
+          city: "",
+          state: "",
+          aadhar: null,
+          marksheets: [],
+        });
+      } else {
+        setMessage(result.error || "Something went wrong.");
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      setMessage("Error submitting the form.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -100,10 +133,15 @@ const RegisterForm = () => {
 
         <button
           type="submit"
-          className="w-full bg-blue-500 text-white p-2 rounded mt-4 hover:bg-blue-600"
+          disabled={loading}
+          className={`w-full p-2 rounded mt-4 text-white ${
+            loading ? "bg-gray-400" : "bg-blue-500 hover:bg-blue-600"
+          }`}
         >
-          Submit
+          {loading ? "Submitting..." : "Submit"}
         </button>
+
+        {message && <p className="mt-2 text-center text-red-500">{message}</p>}
       </form>
     </div>
   );
