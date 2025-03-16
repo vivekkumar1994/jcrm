@@ -16,7 +16,14 @@ import work3 from "../images/booking.jpg";
 const projects = [
   { title: "Smart Home Dashboard", category: "Web Apps", image: boss1 },
   { title: "Onboard UX/UI Design", category: "UI/UX", image: work1 },
-  { title: "Booking System App", category: "Mobile Apps", image: work2 },
+  { title: "Backend developer", category: "Backend Developer", image: work2 },
+
+
+  { title: "Juice Product Homepage", category: "Web Apps", image: work3 },
+
+  { title: "Juice Product Homepage", category: "Web Apps", image: work3 },
+
+
   { title: "Juice Product Homepage", category: "Web Apps", image: work3 },
 ];
 
