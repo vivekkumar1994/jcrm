@@ -33,11 +33,19 @@ export async function POST(req: Request) {
       { message: "User registered successfully", user: newUser },
       { status: 201 }
     );
-  } catch (error: any) {
+  } catch (error) {
     console.error("Signup Error:", error);
 
+    // Handle error as an unknown type and perform a type assertion
+    if (error instanceof Error) {
+      return NextResponse.json(
+        { error: "Internal Server Error", details: error.message },
+        { status: 500 }
+      );
+    }
+
     return NextResponse.json(
-      { error: "Internal Server Error", details: error.message },
+      { error: "Unknown Error" },
       { status: 500 }
     );
   }

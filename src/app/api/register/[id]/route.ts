@@ -5,13 +5,13 @@ interface Params {
   id: string;
 }
 
-// Use the correct signature for API routes in the App Router
+// Correct syntax for dynamic route parameters
 export async function GET(
   request: NextRequest,
-  context: { params: Params }
+  { params }: { params: Params }
 ) {
   try {
-    const { id } = context.params;
+    const { id } = params;
 
     // Ensure ID is parsed correctly as an integer
     const user = await prisma.register.findUnique({

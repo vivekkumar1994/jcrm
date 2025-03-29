@@ -4,7 +4,6 @@ import Image from "next/image";
 import boss1 from "../images/boss1.jpg";
 import boss2 from "../images/boss2.jpg";
 import boss3 from "../images/boss3.jpg";
-import latest from "../images/latest1.jpg";
 import work1 from "../images/smarthome.jpg";
 import work2 from "../images/onboard.png";
 import work3 from "../images/booking.jpg";
