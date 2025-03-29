@@ -2,12 +2,9 @@
 
 import Image from "next/image";
 import { motion } from "framer-motion";
-import boss1 from "@/app/images/boss1.jpg";
+
 import latest from "@/app/images/latest1.jpg";
-import work1 from "@/app/images/smarthome.jpg";
-import work2 from "@/app/images/onboard.png";
-import work3 from "@/app/images/booking.jpg";
-import work4 from "@/app/images/work3.jpg";
+
 import Link from "next/link";
 
 const services = [

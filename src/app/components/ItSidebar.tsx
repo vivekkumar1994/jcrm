@@ -3,7 +3,7 @@
 import React, { FC, useState, useEffect } from "react";
 import axios from "axios";
 import Cookies from "js-cookie";
-import { Home, User, Settings, LogOut, Menu } from "lucide-react";
+import {  LogOut, Menu } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 const ItSidebar: FC = () => {

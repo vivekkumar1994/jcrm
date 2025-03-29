@@ -19,7 +19,7 @@ export async function POST(req: Request): Promise<NextResponse> {
 
     // Convert userId to integer
     const registerId = parseInt(userId);
-  
+
     // Step 1: Check if the user exists in the `Register` table
     const userExists = await prisma.register.findUnique({
       where: { id: registerId },
@@ -38,13 +38,20 @@ export async function POST(req: Request): Promise<NextResponse> {
         day: selectedDay,
         timeSlot: selectedSlot,
         registerId, // Foreign key reference
-        userId
+        userId,
       },
     });
 
     return NextResponse.json({ message: 'Booking Created Successfully', result });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Error creating booking:', error);
-    return NextResponse.json({ error: 'Failed to create booking', details: error.message }, { status: 500 });
+
+    // Check if error is an instance of Error to safely access message
+    if (error instanceof Error) {
+      return NextResponse.json({ error: 'Failed to create booking', details: error.message }, { status: 500 });
+    }
+
+    // Return a generic error message for unexpected error types
+    return NextResponse.json({ error: 'Failed to create booking', details: 'Unknown error occurred' }, { status: 500 });
   }
 }
