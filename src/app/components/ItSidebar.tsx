@@ -5,7 +5,6 @@ import axios from "axios";
 import Cookies from "js-cookie";
 import {  LogOut, Menu } from "lucide-react";
 import { useRouter } from "next/navigation";
-import Image from "next/image";
 
 const ItSidebar: FC = () => {
     const [activeTask, setActiveTask] = useState<string>("Home");
@@ -79,7 +78,7 @@ const ItSidebar: FC = () => {
             >
                 <div className="flex items-center justify-between gap-4 p-6 text-2xl font-bold text-white bg-gray-900 border-b border-gray-700 shadow-md">
                     <div className="flex items-center gap-4">
-                        <Image
+                        <img
                             src={alldata.profilePhoto}
                             alt="Profile"
                             className="w-16 h-16 rounded-full border-2 border-white"

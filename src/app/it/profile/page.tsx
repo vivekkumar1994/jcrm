@@ -147,13 +147,13 @@ export default function ProfilePage() {
         <div className="bg-white p-6 rounded-lg shadow-md space-y-4">
           {profilePicture && (
             <div className="mb-4">
-              <Image
-                src={profilePicture}
-                alt="Profile"
-                className="w-32 h-32 rounded-full mx-auto"
-                width={128}
-                height={128}
-              />
+   <img
+    src={profilePicture || "https://via.placeholder.com/50?text=User"}
+    alt="User"
+    width={50}
+    height={50}
+    className="rounded-full"
+  />
             </div>
           )}
           {resume && (
