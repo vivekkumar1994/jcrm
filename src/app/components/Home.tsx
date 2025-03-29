@@ -63,16 +63,11 @@ export default function HomePage() {
             className="flex h-full w-full"
             initial={{ x: "0%" }}
             animate={{ x: ["0%", "-100%", "-200%", "-300%", "0%"] }}
-            transition={{
-              duration: 25,
-              repeat: Infinity,
-              ease: "linear",
-            }}
+            transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
           >
-            <Image src={work1} alt="Slide 1" className="w-full object-cover" />
-            <Image src={work2} alt="Slide 2" className="w-full object-cover" />
-            <Image src={work3} alt="Slide 3" className="w-full object-cover" />
-            <Image src={work4} alt="Slide 4" className="w-full object-cover" />
+            {[work1, work2, work3, work4].map((img, index) => (
+              <Image key={index} src={img} alt={`Slide ${index + 1}`} className="w-full object-cover" />
+            ))}
           </motion.div>
         </div>
         <motion.div
@@ -136,7 +131,7 @@ export default function HomePage() {
             <div key={index} className="bg-white p-6 rounded-lg shadow-md">
               <Image src={client} alt={`Client ${index + 1}`} className="rounded-full w-24 h-24 mx-auto" />
               <h3 className="text-xl font-semibold mt-4">Client {index + 1}</h3>
-              <p className="text-gray-600">"Amazing experience and great support!"</p>
+              <p className="text-gray-600">&quot;Amazing experience and great support!&quot;</p>
             </div>
           ))}
         </motion.div>

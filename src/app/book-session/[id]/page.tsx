@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import axios from "axios";
 import heroImage from "@/app/images/heroImage.jpg"; // Import the image
 import { useParams } from "next/navigation";
+import Image from 'next/image';
 
 // Define types
 interface BookSessionProps {
@@ -92,7 +93,7 @@ const BookSession: React.FC<BookSessionProps> = () => {
         <div className="w-1/3 flex flex-col items-center border-r pr-6">
           {userDetails && (
             <>
-              <img
+              <Image
                 src={userDetails.profilePhoto}
                 alt="Profile"
                 className="w-32 h-32 rounded-full shadow-lg mb-4 border-4 border-blue-600"

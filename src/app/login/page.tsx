@@ -34,10 +34,15 @@ export default function Login() {
 
       // Redirect based on user type
       router.push(data.redirectPath);
-    } catch (error: any) {
-      setError(error.message);
+    } catch (error) {
+      if (error instanceof Error) {
+        setError(error.message);
+      } else {
+        setError("An unknown error occurred");
+      }
       setLoading(false);
     }
+    
   };
 
   return (

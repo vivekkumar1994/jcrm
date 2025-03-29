@@ -1,14 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/app/lib/prisma";
 
-interface Params {
-  id: string;
-}
-
-// Correct syntax for dynamic route parameters
 export async function GET(
   request: NextRequest,
-  { params }: { params: Params }
+  { params }: { params: { id: string } } // Fix the typing here
 ) {
   try {
     const { id } = params;
@@ -46,7 +41,7 @@ export async function GET(
     });
 
     if (!user) {
-      return NextResponse.json({ error: "User not found" }, { status: 404 });
+      return NextResponse.json({ error: 'User not found' }, { status: 404 });
     }
 
     return NextResponse.json(user, { status: 200 });

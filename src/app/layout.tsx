@@ -36,8 +36,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   useEffect(() => {
     const token = Cookies.get("authToken");
     const storedUserType = Cookies.get("userType");
-
-    console.log(token,userType)
+  
+    console.log(token, storedUserType); // Changed from userType to storedUserType
   
     if (pathname.startsWith("/admin") || pathname.startsWith("/it")) {
       if (!token) {

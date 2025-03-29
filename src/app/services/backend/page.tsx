@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { motion } from "framer-motion";
+import Image from "next/image";
 
 // Define the type for the profile
 interface UXProfile {
@@ -88,7 +89,7 @@ const UXSlider: React.FC = () => {
               whileHover="hover"
             >
               {profile.profilePhoto && (
-                <img
+                <Image
                   src={profile.profilePhoto}
                   alt="profilePhoto"
                   className="w-24 h-24 mx-auto rounded-full border mb-4"
