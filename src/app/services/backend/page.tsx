@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { motion } from "framer-motion";
 
 // Define the type for the profile
 interface UXProfile {
@@ -12,6 +13,7 @@ interface UXProfile {
   linkedinProfile?: string;
   professionalRole: string;
   access: number;
+  profilePhoto?: string;
 }
 
 const UXSlider: React.FC = () => {
@@ -26,7 +28,7 @@ const UXSlider: React.FC = () => {
         console.log("API Response:", response.data);
 
         const filteredProfiles = response.data.filter(
-          (profile) => profile.professionalRole === "Backend" && profile.access === 1
+          (profile) => profile.professionalRole === "Backend Developer" && profile.access === 1
         );
         console.log("Filtered Profiles:", filteredProfiles);
 
@@ -42,9 +44,30 @@ const UXSlider: React.FC = () => {
     fetchUxProfiles();
   }, []);
 
+  // Animation variants
+  const containerVariants = {
+    hidden: { opacity: 0, y: 50 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { staggerChildren: 0.2, delayChildren: 0.3 },
+    },
+  };
+
+  const cardVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.3 } },
+    hover: { scale: 1.05, transition: { duration: 0.2 } },
+  };
+
   return (
-    <div className="w-full overflow-hidden mt-35">
-      <h2 className="text-2xl font-bold mb-4 text-center">UX Developer Profiles</h2>
+    <motion.div
+      className="w-full overflow-hidden mt-10 p-6 bg-gray-100 rounded-lg shadow-md"
+      initial="hidden"
+      animate="visible"
+      variants={containerVariants}
+    >
+      <h2 className="text-3xl font-bold mb-6 text-center text-blue-600">UX Developer Profiles</h2>
 
       {loading ? (
         <p className="text-center">Loading...</p>
@@ -53,31 +76,46 @@ const UXSlider: React.FC = () => {
       ) : uxProfiles.length === 0 ? (
         <p className="text-center">No UX Developer profiles found</p>
       ) : (
-        <div className="flex space-x-4 overflow-x-auto">
+        <motion.div
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+          variants={containerVariants}
+        >
           {uxProfiles.map((profile) => (
-            <div
+            <motion.div
               key={profile.id}
-              className="min-w-[300px] bg-white shadow-lg rounded-lg p-4 border"
+              className="bg-white shadow-lg rounded-lg p-5 border"
+              variants={cardVariants}
+              whileHover="hover"
             >
-              <h3 className="text-lg font-semibold">{profile.name}</h3>
-              <p className="text-gray-500">
+              {profile.profilePhoto && (
+                <img
+                  src={profile.profilePhoto}
+                  alt="profilePhoto"
+                  className="w-24 h-24 mx-auto rounded-full border mb-4"
+                />
+              )}
+              <h3 className="text-lg font-semibold text-gray-800 text-center">{profile.name}</h3>
+              <p className="text-gray-500 text-center">
                 {profile.city}, {profile.state}
               </p>
-              {profile.linkedinProfile && (
-                <a
-                  href={profile.linkedinProfile}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-blue-500 hover:underline mt-2 block"
-                >
-                  LinkedIn Profile
-                </a>
-              )}
-            </div>
-          ))}
-        </div>
-      )}
+              <h5 className="text-lg font-semibold text-gray-800 text-center">{profile.professionalRole}</h5>
+              {profile.professionalRole && (
+      <div className="flex justify-center mt-4">
+      <a
+        href={`/book-session/${profile.id}`}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="bg-blue-600 text-white font-semibold py-2 px-6 rounded-lg shadow-md hover:bg-blue-700 hover:shadow-lg transition duration-300 ease-in-out"
+      >
+        Book a Session
+      </a>
     </div>
+              )}
+            </motion.div>
+          ))}
+        </motion.div>
+      )}
+    </motion.div>
   );
 };
 
