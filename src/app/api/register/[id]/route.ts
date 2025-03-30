@@ -1,23 +1,24 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/app/lib/prisma";
+import { RouteContext } from "@/app/types/routeType"; // Adjust the import path as necessary
 
 export async function GET(
   request: Request,
-  { params }: { params: { id: string } }
+  context: RouteContext
 ) {
   try {
-    // Convert the id to an integer and handle NaN cases
-    const id = parseInt(params.id);
-    if (isNaN(id)) {
+    const { id } = context.params;
+    const userId = Number(id);
+
+    if (isNaN(userId)) {
       return NextResponse.json(
         { error: "Invalid user ID format" },
         { status: 400 }
       );
     }
 
-    // Find the user by ID with all the fields except the password
     const user = await prisma.register.findUnique({
-      where: { id },
+      where: { id: userId },
       select: {
         id: true,
         name: true,
@@ -48,10 +49,14 @@ export async function GET(
     });
 
     if (!user) {
-      return NextResponse.json({ error: "User not found" }, { status: 404 });
+      return NextResponse.json(
+        { error: "User not found" },
+        { status: 404 }
+      );
     }
 
     return NextResponse.json({ user }, { status: 200 });
+
   } catch (error: any) {
     console.error("Error fetching user:", error);
     return NextResponse.json(
