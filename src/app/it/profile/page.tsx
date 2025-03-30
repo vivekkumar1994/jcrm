@@ -147,7 +147,7 @@ export default function ProfilePage() {
         <div className="bg-white p-6 rounded-lg shadow-md space-y-4">
           {profilePicture && (
             <div className="mb-4">
-   <img
+   <Image
     src={profilePicture || "https://via.placeholder.com/50?text=User"}
     alt="User"
     width={50}
