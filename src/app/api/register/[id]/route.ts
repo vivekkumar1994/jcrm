@@ -57,7 +57,7 @@ export async function GET(
 
     return NextResponse.json({ user }, { status: 200 });
 
-  } catch (error: any) {
+  } catch (error:unknown) {
     console.error("Error fetching user:", error);
     return NextResponse.json(
       { error: "Internal Server Error", message: error.message },
