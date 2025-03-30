@@ -1,15 +1,21 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/app/lib/prisma";
-import { RouteContext } from "@/app/types/routeType"; // Adjust the import path as necessary
 
 export async function GET(
   request: Request,
-  context: RouteContext
+  { params }: { params: { id: number } }
 ) {
   try {
-    const { id } = context.params;
-    const userId = Number(id);
+    const { id } = params;
 
+    if (!id) {
+      return NextResponse.json(
+        { error: "User ID not provided" },
+        { status: 400 }
+      );
+    }
+
+    const userId = id
     if (isNaN(userId)) {
       return NextResponse.json(
         { error: "Invalid user ID format" },
@@ -56,11 +62,19 @@ export async function GET(
     }
 
     return NextResponse.json({ user }, { status: 200 });
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      console.error("Error fetching user:", error.message);
+      return NextResponse.json(
+        { error: "Internal Server Error", message: error.message },
+        { status: 500 }
+      );
+    }
 
-  } catch (error:unknown) {
-    console.error("Error fetching user:", error);
+    // Handle non-Error cases
+    console.error("Unexpected error:", error);
     return NextResponse.json(
-      { error: "Internal Server Error", message: error.message },
+      { error: "Internal Server Error", message: "An unexpected error occurred" },
       { status: 500 }
     );
   }
