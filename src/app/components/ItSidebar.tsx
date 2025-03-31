@@ -79,11 +79,13 @@ const ItSidebar: FC = () => {
             >
                 <div className="flex items-center justify-between gap-4 p-6 text-2xl font-bold text-white bg-gray-900 border-b border-gray-700 shadow-md">
                     <div className="flex items-center gap-4">
-                        <Image
-                            src={alldata.profilePhoto}
-                            alt="Profile"
-                            className="w-16 h-16 rounded-full border-2 border-white"
-                        />
+                    <Image
+    src={alldata.profilePhoto}
+    alt="Profile"
+    width={50}  // Explicitly set the width
+    height={50} // Explicitly set the height
+    className="w-16 h-16 rounded-full border-2 border-white"
+/>
                         <span className="text-lg font-semibold truncate">{alldata.name}</span>
                     </div>
                     <button
