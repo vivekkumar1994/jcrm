@@ -29,7 +29,7 @@ const RegisteredUsers = () => {
         setNewPassword(""); // Clear password field when opening modal
     };
 
-   const toggleAccess = async (id: number) => {
+    const toggleAccess = async (id: number) => {
         try {
             const response = await fetch(`/api/register?id=${id}`, {
                 method: "PATCH",
@@ -49,6 +49,7 @@ const RegisteredUsers = () => {
             console.error("Error toggling access:", error);
         }
     };
+
     const handleSaveEdit = async () => {
         if (!editUser) return;
 
@@ -108,6 +109,7 @@ const RegisteredUsers = () => {
                                 <td className="px-4 py-2 border">{user.id}</td>
                                 <td className="px-4 py-2 border">{user.name}</td>
                                 <td className="px-4 py-2 border">{user.email}</td>
+                                <td className="px-4 py-2 border">{user.phone}</td>
                                 <td className="px-4 py-2 border">
                                     <button
                                         onClick={() => toggleAccess(user.id)}
@@ -116,7 +118,6 @@ const RegisteredUsers = () => {
                                         {user.access === 1 ? "Enabled" : "Disabled"}
                                     </button>
                                 </td>
-                                <td className="px-4 py-2 border">{user.phone}</td>
                                 <td className="px-4 py-2 border">
                                     <button
                                         onClick={() => handleEdit(user)}
@@ -161,7 +162,7 @@ const RegisteredUsers = () => {
                         <label className="block mb-2">
                             Phone:
                             <input
-                                type="text"
+                                type="tel"
                                 className="border p-2 w-full"
                                 value={editUser.phone}
                                 onChange={(e) =>

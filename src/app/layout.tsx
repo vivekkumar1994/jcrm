@@ -1,8 +1,8 @@
 "use client";
-import { Poppins } from "@next/font/google";
+import { Poppins, Geist, Geist_Mono } from "next/font/google";
 import { useEffect, useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
-import { Geist, Geist_Mono } from "next/font/google";
+
 import Cookies from "js-cookie";
 import "./globals.css";
 import Footer from "@/app/components/Footer";
@@ -46,7 +46,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       }
   
       setIsAuthenticated(!!token);
-      setUserType(storedUserType);
+      setUserType(storedUserType || null); // Fixed: Handle undefined userType
   
       // Route protection and redirect for dashboard
       if (storedUserType === "admin") {

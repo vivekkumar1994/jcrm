@@ -4,25 +4,28 @@ import { useState } from "react";
 import Image from "next/image";
 import { motion } from "framer-motion";
 import { FaQuoteLeft, FaQuoteRight } from "react-icons/fa";
+import { Roboto_Flex } from "next/font/google";  // Updated font import
 import boss1 from "../images/boss1.jpg";
 import boss2 from "../images/boss2.jpg";
 import boss3 from "../images/boss3.jpg";
+
+const roboto = Roboto_Flex ({ subsets: ["latin"], weight: "400" });  // Font configuration
 
 const clients = [
   { name: "Tesla", logo: boss1 },
   { name: "Microsoft", logo: boss2 },
   { name: "Google", logo: boss3 },
   { name: "Amazon", logo: boss1 },
-  { name: "Airbnb", logo: boss2},
+  { name: "Airbnb", logo: boss2 },
   { name: "Spotify", logo: boss3 },
 ];
 
 const testimonials = [
   {
     quote: "Working with this team has been a game changer for our business!",
-    name: "Sushant diwadi",
+    name: "Sushant Diwadi",
     position: "CEO, Mahojogi",
-    image: boss1
+    image: boss1,
   },
   {
     quote: "Their design expertise and speed are unmatched!",
@@ -42,8 +45,9 @@ export default function ClientsPage() {
   const [currentTestimonial, setCurrentTestimonial] = useState(0);
 
   return (
-    <main className="flex flex-col items-center space-y-16 py-16 bg-gray-100">
-      
+    <main
+      className={`flex flex-col items-center space-y-16 py-16 bg-gray-100 ${roboto.className}`}
+    >
       {/* Title */}
       <motion.h1
         className="text-5xl font-bold text-gray-800 text-center"
@@ -64,7 +68,13 @@ export default function ClientsPage() {
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.5, delay: index * 0.1 }}
           >
-            <Image src={client.logo} alt={client.name} width={150} height={100} className="object-contain" />
+            <Image
+              src={client.logo}
+              alt={client.name}
+              width={150}
+              height={100}
+              className="object-contain"
+            />
           </motion.div>
         ))}
       </div>
@@ -72,7 +82,7 @@ export default function ClientsPage() {
       {/* Testimonials Section */}
       <section className="w-full bg-white py-20 text-center">
         <h2 className="text-3xl font-bold text-gray-800">What Our Clients Say</h2>
-        
+
         <motion.div
           className="max-w-3xl mx-auto mt-6 bg-gray-100 p-8 rounded-lg shadow-lg relative"
           initial={{ opacity: 0, y: 30 }}
@@ -85,9 +95,17 @@ export default function ClientsPage() {
           </p>
           <FaQuoteRight className="text-4xl text-blue-500 absolute bottom-4 right-4" />
           <div className="flex items-center justify-center mt-6">
-            <Image src={testimonials[currentTestimonial].image} alt="Client" width={80} height={80} className="rounded-full border-2 border-blue-500" />
+            <Image
+              src={testimonials[currentTestimonial].image}
+              alt="Client"
+              width={80}
+              height={80}
+              className="rounded-full border-2 border-blue-500"
+            />
             <div className="ml-4 text-left">
-              <h4 className="text-xl font-semibold text-gray-800">{testimonials[currentTestimonial].name}</h4>
+              <h4 className="text-xl font-semibold text-gray-800">
+                {testimonials[currentTestimonial].name}
+              </h4>
               <p className="text-gray-600">{testimonials[currentTestimonial].position}</p>
             </div>
           </div>
@@ -120,7 +138,6 @@ export default function ClientsPage() {
           Contact Us
         </button>
       </motion.div>
-
     </main>
   );
 }
