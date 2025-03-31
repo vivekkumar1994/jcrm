@@ -3,19 +3,11 @@ import { prisma } from "@/app/lib/prisma";
 
 export async function GET(
   request: Request,
-  { params }: { params: { id: number } }
+  { params }: { params: { id: string } }
 ) {
   try {
-    const { id } = params;
+    const userId = parseInt(params.id, 10);
 
-    if (!id) {
-      return NextResponse.json(
-        { error: "User ID not provided" },
-        { status: 400 }
-      );
-    }
-
-    const userId = id
     if (isNaN(userId)) {
       return NextResponse.json(
         { error: "Invalid user ID format" },
@@ -62,19 +54,10 @@ export async function GET(
     }
 
     return NextResponse.json({ user }, { status: 200 });
-  } catch (error: unknown) {
-    if (error instanceof Error) {
-      console.error("Error fetching user:", error.message);
-      return NextResponse.json(
-        { error: "Internal Server Error", message: error.message },
-        { status: 500 }
-      );
-    }
-
-    // Handle non-Error cases
-    console.error("Unexpected error:", error);
+  } catch (error) {
+    console.error("Error fetching user:", error);
     return NextResponse.json(
-      { error: "Internal Server Error", message: "An unexpected error occurred" },
+      { error: "Internal Server Error" },
       { status: 500 }
     );
   }
