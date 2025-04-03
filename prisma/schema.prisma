@@ -3,85 +3,97 @@ generator client {
 }
 
 datasource db {
-  provider = "mysql"
-  url      = "mysql://root@localhost:3308/jcrm"
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
-model Register {
-  id                Int           @id @default(autoincrement())
-  name              String?       @db.VarChar(255)
-  email             String?       @unique(map: "email") @db.VarChar(255)
-  phone             String?       @db.VarChar(20)
-  address           String?       @db.Text
-  city              String?       @db.VarChar(100)
-  state             String?       @db.VarChar(100)
-  qualification     String?       @db.VarChar(255)
-  university        String?       @db.VarChar(255)
-  graduationYear    Int?          @db.Year
-  skills            String?       @db.Text
-  experience        String?       @db.Text
-  availability      String?       @db.VarChar(50)
-  preferredLocation String?       @db.VarChar(255)
-  linkedinProfile   String?       @db.VarChar(255)
-  githubProfile     String?       @db.VarChar(255)
-  resume            String?       @db.LongText
-  profilePhoto      String?       @db.LongText
-  portfolio         String?       @db.VarChar(255)
-  certificates      String?       @db.LongText
-  gender            String        @db.Text
-  courseType        String?       @db.VarChar(100)
-  additionalInfo    String?       @db.Text
-  reference         String?       @db.Text
-  professionalRole  String?       @db.VarChar(255)
-  created_at        DateTime      @default(now()) @db.Timestamp(0)
-  updated_at        DateTime      @default(now()) @db.Timestamp(0)
-  password String @default("")
-  userType String @default("it")
+model User {
+  id            String    @id @default(uuid())
+  clerkUserId   String    @unique // clerk user id
+  email         String    @unique
+  name          String?
+  imageUrl      String?
+  industry      String?    // Combined industry-subindustry (e.g., "tech-software-development")
+  industryInsight IndustryInsight? @relation(fields: [industry], references: [industry])
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
 
-  access            Int           @default(0)
-    bookings  BookSession[]  @relation("RegisterToBookSession")
+  // Profile fields
+  bio           String?
+  experience    Int?      // Years of experience
+  
+  // Relations
+  skills        String[]  // Array of skills
+  assessments   Assessment[]
+  resume        Resume?
+  coverLetter   CoverLetter[]
 }
 
-model BookSession {
-  id         Int      @id @default(autoincrement()) // Auto-incremented ID
-  name       String   // Name of the person booking the session
-  email      String   // Email of the person
-  phone      String   // Phone number
-  day        String   // The day of the session
-  timeSlot   String   // The time slot for the session
-  userId     String   // User ID referencing the Register model
-  createdAt  DateTime @default(now()) // Automatically sets the current date-time on creation
+model Assessment {
+  id            String    @id @default(cuid())
+  userId        String
+  user          User      @relation(fields: [userId], references: [id])
+  quizScore     Float     // Overall quiz score
+  questions     Json[]    // Array of {question, answer, userAnswer, isCorrect}
+  category      String    // "Technical", "Behavioral", etc.
+  improvementTip String?  // AI-generated improvement tip
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
 
-  registerId Int  // Foreign key for the relationship
-   register   Register  @relation("RegisterToBookSession", fields: [registerId], references: [id])
+  @@index([userId])
 }
 
-
-
-model registrations {
-  id         Int      @id @default(autoincrement())
-  name       String   @db.VarChar(255)
-  email      String   @db.VarChar(255)
-  phone      String   @db.VarChar(20)
-  address    String   @db.Text
-  city       String   @db.VarChar(100)
-  state      String   @db.VarChar(100)
-  aadhar     String?  @db.VarChar(255)
-  marksheets String?  @db.Text
-  created_at DateTime @default(now()) @db.Timestamp(0)
+model Resume {
+  id          String    @id @default(cuid())
+  userId      String    @unique    // One resume per user
+  user        User      @relation(fields: [userId], references: [id])
+  content     String    @db.Text // Markdown content
+  atsScore    Float?
+  feedback    String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
 }
 
-model users {
-  id         Int      @id @default(autoincrement())
-  name       String   @db.VarChar(100)
-  email      String   @unique(map: "email") @db.VarChar(100)
-  password   String   @db.VarChar(255)
-  userType   String   @default("admin")
-  created_at DateTime @default(now()) @db.Timestamp(0)
+model CoverLetter {
+  id              String    @id @default(cuid())
+  userId          String
+  user            User      @relation(fields: [userId], references: [id])
+  content         String    // Markdown content
+  jobDescription  String?
+  companyName     String    // Name of the company applying to
+  jobTitle        String    // Position applying for
+  status          String    @default("draft") // draft, completed
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  @@index([userId])
 }
 
-enum register_gender {
-  Male
-  Female
-  Other
+// Combined Industry Trends and Salary Insights
+model IndustryInsight {
+  id            String    @id @default(cuid())
+  industry      String    @unique  // The industry this data belongs to (e.g., "tech-software-development")
+  
+  // Users in this industry
+  users         User[]
+  
+  // Salary data
+  salaryRanges  Json[]    // Array of { role: string, min: float, max: float, median: float, location: string? }
+  
+  // Industry trends
+  growthRate    Float     // Industry growth rate
+  demandLevel   String    // "High", "Medium", "Low"
+  topSkills     String[]  // Most in-demand skills
+  
+  // Market conditions
+  marketOutlook String    // "Positive", "Neutral", "Negative"
+  keyTrends     String[]  // Array of current industry trends
+  
+  // Learning suggestions
+  recommendedSkills String[]  // Skills recommended for the industry
+  
+  lastUpdated   DateTime  @default(now())
+  nextUpdate    DateTime  // Scheduled update time
+
+  @@index([industry])
 }
