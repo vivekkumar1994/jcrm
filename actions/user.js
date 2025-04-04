@@ -91,4 +91,28 @@ export async function getUserOnboardingStatus() {
       throw new Error("Failed to check onboarding status");
     }
   }
-  
+  export async function getAllUsers() {
+  try {
+    const users = await db.user.findMany({
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        imageUrl: true, // Add this field
+        industry: true,
+        experience: true,
+        bio: true,
+        skills: true,
+        createdAt: true,
+      },
+      orderBy: {
+        createdAt: "desc",
+      },
+    });
+
+    return users;
+  } catch (error) {
+    console.error("Error fetching all users:", error.message);
+    throw new Error("Failed to retrieve users");
+  }
+}

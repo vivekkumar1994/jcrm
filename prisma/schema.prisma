@@ -27,6 +27,18 @@ model User {
   assessments   Assessment[]
   resume        Resume?
   coverLetter   CoverLetter[]
+  sessions     Session[] // Connects to booked sessions
+}
+
+model Session {
+  id          String   @id @default(uuid())
+  userId      String   // Foreign key (who is booked)
+  bookedBy    String   // Who booked this session
+  email       String
+  phone       String
+  date        DateTime
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
 }
 
 model Assessment {
