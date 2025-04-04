@@ -36,7 +36,7 @@ model Session {
   bookedBy    String   // Who booked this session
   email       String
   phone       String
-  date        DateTime
+  date        String
   user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   
 }
