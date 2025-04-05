@@ -1,10 +1,11 @@
+// app/layout.tsx
 import { Inter } from "next/font/google";
 import "./globals.css";
+import { ClerkProvider } from "@clerk/nextjs";
 import { ThemeProvider } from "@/components/theme-provider";
-import { ClerkProvider} from "@clerk/nextjs";
-import Footer from "@/components/footer"
-
 import Header from "@/components/header";
+import Footer from "@/components/footer";
+
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
@@ -16,14 +17,12 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={inter.className}>
-        <ClerkProvider appearance={{
-          baseTheme:"dark"
-        }}>
-          
+        <ClerkProvider appearance={{ baseTheme: "dark" }}>
+          <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
             <Header />
-            <main className="min-h-screen">{children}</main>
-           <Footer/>
-        
+            <main>{children}</main>
+            <Footer />
+          </ThemeProvider>
         </ClerkProvider>
       </body>
     </html>

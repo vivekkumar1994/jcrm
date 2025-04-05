@@ -14,6 +14,7 @@ export default function SessionPage() {
 
   const [user, setUser] = useState(null);
   const [selectedSlot, setSelectedSlot] = useState(null);
+  const [selectedTimeSlot, setSelectedTimeSlot] = useState(null);
   const [message, setMessage] = useState("");
   const [bookerName, setBookerName] = useState("");
   const [bookerEmail, setBookerEmail] = useState("");
@@ -40,20 +41,37 @@ export default function SessionPage() {
     format(addDays(new Date(), i), "EEEE, MMM d")
   );
 
+  const timeSlots = [
+    "10:00 AM - 12:00 PM",
+    "12:00 PM - 2:00 PM",
+    "2:00 PM - 4:00 PM",
+    "4:00 PM - 6:00 PM",
+  ];
+
   async function handleBooking(e) {
     e.preventDefault();
-    setMessage(""); // Clear previous messages
+    setMessage("");
 
-    if (!selectedSlot || !bookerName.trim() || !bookerEmail.trim() || !bookerPhone.trim()) {
-      setMessage("⚠️ Please fill in all fields and select a slot.");
+    if (
+      !selectedSlot ||
+      !selectedTimeSlot ||
+      !bookerName.trim() ||
+      !bookerEmail.trim() ||
+      !bookerPhone.trim()
+    ) {
+      setMessage("⚠️ Please fill in all fields, select a date and a time slot.");
       return;
     }
 
     setIsLoading(true);
     try {
       await bookSessionWithUser(userId, {
-        date: selectedSlot,
-        bookedBy: { name: bookerName, email: bookerEmail, phone: bookerPhone },
+        date: `${selectedSlot} (${selectedTimeSlot})`,
+        bookedBy: {
+          name: bookerName,
+          email: bookerEmail,
+          phone: bookerPhone,
+        },
       });
       setMessage("🎉 Booking confirmed successfully!");
       setTimeout(() => router.push("/"), 2000);
@@ -104,14 +122,19 @@ export default function SessionPage() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.6, duration: 0.8 }}
       >
-        <h2 className="text-xl font-semibold text-blue-400">📅 Select a Slot</h2>
+        <h2 className="text-xl font-semibold text-blue-400">📅 Select a Date</h2>
         <div className="mt-4 grid grid-cols-2 gap-2">
           {slots.map((slot, index) => (
             <motion.button
               key={index}
-              onClick={() => setSelectedSlot(slot)}
+              onClick={() => {
+                setSelectedSlot(slot);
+                setSelectedTimeSlot(null); // reset time slot when date changes
+              }}
               className={`p-3 rounded-lg transition-all shadow-lg text-sm ${
-                selectedSlot === slot ? "bg-blue-500 text-white" : "bg-gray-700 text-gray-300"
+                selectedSlot === slot
+                  ? "bg-blue-500 text-white"
+                  : "bg-gray-700 text-gray-300"
               }`}
               whileHover={{ scale: 1.05 }}
             >
@@ -119,6 +142,31 @@ export default function SessionPage() {
             </motion.button>
           ))}
         </div>
+
+        {selectedSlot && (
+          <>
+            <h2 className="text-md font-medium text-blue-300 mt-6">
+              🕒 Select Time Slot
+            </h2>
+            <div className="mt-2 grid grid-cols-2 gap-2">
+              {timeSlots.map((time, index) => (
+                <motion.button
+                  key={index}
+                  onClick={() => setSelectedTimeSlot(time)}
+                  className={`p-2 rounded-lg text-sm transition-all shadow-md ${
+                    selectedTimeSlot === time
+                      ? "bg-blue-500 text-white"
+                      : "bg-gray-700 text-gray-300"
+                  }`}
+                  whileHover={{ scale: 1.05 }}
+                >
+                  {time}
+                </motion.button>
+              ))}
+            </div>
+          </>
+        )}
+
         <div className="mt-4 space-y-2">
           <input
             type="text"
@@ -143,6 +191,13 @@ export default function SessionPage() {
           />
         </div>
       </motion.div>
+
+      {selectedSlot && selectedTimeSlot && (
+        <p className="text-sm text-blue-300">
+          You selected: <strong>{selectedSlot}</strong> at{" "}
+          <strong>{selectedTimeSlot}</strong>
+        </p>
+      )}
 
       <motion.button
         onClick={handleBooking}

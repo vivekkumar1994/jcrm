@@ -116,3 +116,31 @@ export async function getUserOnboardingStatus() {
     throw new Error("Failed to retrieve users");
   }
 }
+
+export async function getUserSessions() {
+  const { userId } = await auth();
+  if (!userId) throw new Error("Unauthorized");
+
+  try {
+    const user = await db.user.findUnique({
+      where: { clerkUserId: userId },
+      select: { id: true },
+    });
+
+    if (!user) throw new Error("User not found");
+
+    const sessions = await db.session.findMany({
+      where: {
+        userId: user.id,
+      },
+      orderBy: {
+        date: "desc",
+      },
+    });
+
+    return sessions;
+  } catch (error) {
+    console.error("Error fetching sessions:", error.message);
+    throw new Error("Failed to retrieve sessions");
+  }
+}
