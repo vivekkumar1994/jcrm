@@ -20,8 +20,10 @@ import {
 import Image from "next/image";
 import { checkUser } from "@/lib/checkUser";
 
-export default function Header() {
-  checkUser();
+export default async function  Header() {
+ await  checkUser();
+ const data = await checkUser()
+ console.log(data)
 
   return (
     <header className="fixed top-0 w-full border-b bg-white backdrop-blur-md z-50 supports-[backdrop-filter]:bg-white">

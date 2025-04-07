@@ -11,17 +11,15 @@ export const metadata = {
 export default function AdminLayout({ children }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body>
-        <ClerkProvider appearance={{ baseTheme: "dark" }}>
-          <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+      <body className="mt-25">
+      
             <SidebarProvider>
               <div className="flex min-h-screen">
                 <AppSidebar />
                 <main className="flex-1 p-4">{children}</main>
               </div>
             </SidebarProvider>
-          </ThemeProvider>
-        </ClerkProvider>
+       
       </body>
     </html>
   );

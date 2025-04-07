@@ -144,3 +144,18 @@ export async function getUserSessions() {
     throw new Error("Failed to retrieve sessions");
   }
 }
+
+
+export async function getAllUserDetails() {
+  const users = await prisma.user.findMany({
+    include: {
+      assessments: true,
+      resume: true,
+      coverLetter: true,
+      sessions: true,
+      industryInsight: true,
+    },
+  });
+
+  return users;
+}

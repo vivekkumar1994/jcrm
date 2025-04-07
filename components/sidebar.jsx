@@ -23,7 +23,7 @@ export default function Sidebar() {
   return (
     <>
       {/* Mobile Navbar */}
-      <div className="bg-gray-900 text-white p-4 flex justify-between md:hidden">
+      <div className="bg-gray-900 text-white p-4 flex justify-between md:hidden mt-10">
         <h2 className="text-xl font-bold">Admin Panel</h2>
         <button onClick={() => setIsOpen(!isOpen)} className="text-white focus:outline-none">
           {isOpen ? <X size={28} /> : <Menu size={28} />}
