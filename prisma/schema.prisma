@@ -10,7 +10,7 @@ datasource db {
 model Admin {
   id        String   @id @default(uuid())
   name      String
-  email     String   @unique
+  email     String   
   password  String
   role      String   @default("admin")
   createdAt DateTime @default(now())
@@ -22,6 +22,8 @@ model User {
   clerkUserId     String           @unique // clerk user id
   email           String           @unique
   name            String?
+  Designation     String?
+  userType        String            @default("Internship")
   imageUrl        String?
   industry        String? // Combined industry-subindustry (e.g., "tech-software-development")
   industryInsight IndustryInsight? @relation(fields: [industry], references: [industry])

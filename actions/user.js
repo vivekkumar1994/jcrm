@@ -49,6 +49,7 @@ export async function updateUser(data) {
             experience: data.experience,
             bio: data.bio,
             skills: data.skills,
+            Designation: data.designation
           },
         });
 
@@ -101,9 +102,11 @@ export async function getUserOnboardingStatus() {
         imageUrl: true, // Add this field
         industry: true,
         experience: true,
+        Designation:true,
         bio: true,
         skills: true,
         createdAt: true,
+        userType:true
       },
       orderBy: {
         createdAt: "desc",
@@ -147,7 +150,7 @@ export async function getUserSessions() {
 
 
 export async function getAllUserDetails() {
-  const users = await prisma.user.findMany({
+  const users = await db.user.findMany({
     include: {
       assessments: true,
       resume: true,
@@ -158,4 +161,19 @@ export async function getAllUserDetails() {
   });
 
   return users;
+}
+
+export async function updateUserTypeInDB(userId, newUserType) {
+  try {
+    const updated = await db.user.update({
+      where: { id: userId },
+      data: { userType: newUserType },
+    });
+
+    revalidatePath("/admin/users"); // adjust if needed
+    return updated;
+  } catch (error) {
+    console.error("Error updating userType:", error.message);
+    throw new Error("Failed to update userType");
+  }
 }

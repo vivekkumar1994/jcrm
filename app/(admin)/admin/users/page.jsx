@@ -1,14 +1,9 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
-import { getAllUsers } from "@/actions/user";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
-import { saveAs} from "file-saver";
-
-async function updateUserType(userId, newType) {
-  console.log(`Updating user ${userId} to type: ${newType}`);
-  return new Promise((resolve) => setTimeout(resolve, 500));
-}
+import { getAllUsers, updateUserTypeInDB } from "@/actions/user";
+import { saveAs } from "file-saver";
 
 export default function UsersPage() {
   const [users, setUsers] = useState([]);
@@ -32,46 +27,74 @@ export default function UsersPage() {
         setLoading(false);
       }
     }
+
     fetchUsers();
   }, []);
 
   useEffect(() => {
     let list = [...users];
     if (search.trim()) {
-      list = list.filter((user) =>
-        user.name?.toLowerCase().includes(search.toLowerCase()) ||
-        user.email?.toLowerCase().includes(search.toLowerCase())
+      list = list.filter(
+        (user) =>
+          user.name?.toLowerCase().includes(search.toLowerCase()) ||
+          user.email?.toLowerCase().includes(search.toLowerCase())
       );
     }
+
     list.sort((a, b) => {
       const valA = a[sortKey]?.toString().toLowerCase() || "";
       const valB = b[sortKey]?.toString().toLowerCase() || "";
-      return sortOrder === "asc" ? valA.localeCompare(valB) : valB.localeCompare(valA);
+      return sortOrder === "asc"
+        ? valA.localeCompare(valB)
+        : valB.localeCompare(valA);
     });
+
     setFilteredUsers(list);
     setCurrentPage(1);
   }, [search, sortKey, sortOrder, users]);
 
   const handleUserTypeChange = async (userId, newType) => {
-    await updateUserType(userId, newType);
-    setUsers((prev) => prev.map((u) => (u.id === userId ? { ...u, userType: newType } : u)));
-    alert(`User type updated to ${newType}`);
+    try {
+      const updatedUser = await updateUserTypeInDB(userId, newType);
+      setUsers((prev) =>
+        prev.map((user) =>
+          user.id === updatedUser.id ? { ...user, userType: updatedUser.userType } : user
+        )
+      );
+      alert(`User type updated to ${newType}`);
+    } catch (err) {
+      console.error("Error updating user type:", err);
+      alert("Failed to update user type.");
+    }
   };
 
   const exportToCSV = () => {
-    const csvRows = [
-      ["Name", "Email", "Industry", "User Type", "Experience", "Bio", "Skills"].join(","),
-      ...filteredUsers.map((user) => [
-        user.name,
-        user.email,
-        user.industry,
-        user.userType,
-        user.experience,
-        user.bio?.replace(/\n/g, " ").replace(/,/g, ";"),
-        user.skills?.join(" ")
-      ].join(","))
+    const headers = [
+      "Name",
+      "Email",
+      "Industry",
+      "User Type",
+      "Experience",
+      "Bio",
+      "Skills",
     ];
-    const blob = new Blob([csvRows.join("\n")], { type: "text/csv;charset=utf-8;" });
+    const csvRows = [
+      headers.join(","),
+      ...filteredUsers.map((user) =>
+        [
+          user.name,
+          user.email,
+          user.industry,
+          user.userType,
+          user.experience,
+          user.bio?.replace(/\n/g, " ").replace(/,/g, ";"),
+          user.skills?.join(" ") ?? "",
+        ].join(",")
+      ),
+    ];
+    const blob = new Blob([csvRows.join("\n")], {
+      type: "text/csv;charset=utf-8;",
+    });
     saveAs(blob, "users.csv");
   };
 
@@ -104,14 +127,16 @@ export default function UsersPage() {
           <option value="userType">User Type</option>
         </select>
         <button
-          onClick={() => setSortOrder((prev) => (prev === "asc" ? "desc" : "asc"))}
+          onClick={() =>
+            setSortOrder((prev) => (prev === "asc" ? "desc" : "asc"))
+          }
           className="border px-4 py-2 rounded bg-gray-100"
         >
           {sortOrder === "asc" ? "Asc" : "Desc"}
         </button>
         <button
           onClick={exportToCSV}
-          className="ml-auto bg-green-500 text-white px-4 py-2 rounded"
+          className="ml-auto bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
         >
           Download CSV
         </button>
@@ -139,12 +164,14 @@ export default function UsersPage() {
             <tbody>
               {paginatedUsers.map((user, idx) => (
                 <tr key={user.id} className="border-b hover:bg-gray-100">
-                  <td className="p-3">{(currentPage - 1) * usersPerPage + idx + 1}</td>
+                  <td className="p-3">
+                    {(currentPage - 1) * usersPerPage + idx + 1}
+                  </td>
                   <td className="p-3">
                     {user.imageUrl ? (
                       <Image
                         src={user.imageUrl}
-                        alt={user.name || "User Image"}
+                        alt={user.name || "User"}
                         width={40}
                         height={40}
                         className="rounded-full"
@@ -160,7 +187,9 @@ export default function UsersPage() {
                     <select
                       className="border rounded px-2 py-1"
                       value={user.userType || ""}
-                      onChange={(e) => handleUserTypeChange(user.id, e.target.value)}
+                      onChange={(e) =>
+                        handleUserTypeChange(user.id, e.target.value)
+                      }
                     >
                       <option value="">Select</option>
                       <option value="Internship">Internship</option>
@@ -168,17 +197,24 @@ export default function UsersPage() {
                     </select>
                   </td>
                   <td className="p-3">{user.experience ?? "N/A"}</td>
-                  <td className="p-3 max-w-xs overflow-auto">{user.bio || "N/A"}</td>
-                  <td className="p-3">
-                    {user.skills?.length > 0 ? user.skills.join(", ") : "N/A"}
+                  <td className="p-3 max-w-xs overflow-auto">
+                    {user.bio || "N/A"}
                   </td>
                   <td className="p-3">
-                    {new Date(user.createdAt).toLocaleDateString()}
+                    {user.skills?.length > 0
+                      ? user.skills.join(", ")
+                      : "N/A"}
+                  </td>
+                  <td className="p-3">
+                    {user.createdAt
+                      ? new Date(user.createdAt).toLocaleDateString()
+                      : "N/A"}
                   </td>
                 </tr>
               ))}
             </tbody>
           </table>
+
           {/* Pagination */}
           <div className="mt-4 flex justify-between items-center">
             <button

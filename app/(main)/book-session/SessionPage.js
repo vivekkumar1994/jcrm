@@ -113,6 +113,9 @@ export default function SessionPage() {
           />
         </motion.div>
         <h1 className="text-3xl font-bold mt-4">{user.name}</h1>
+        {user.Designation && (
+          <p className="text-blue-200 italic text-sm">{user.Designation}</p>
+        )}
         <p className="text-blue-300">📧 {user.email}</p>
       </motion.div>
 

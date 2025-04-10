@@ -149,6 +149,31 @@ const OnboardingForm = ({ industries }) => {
               </div>
             )}
 
+            {/* Designation Dropdown */}
+            <div className="space-y-2">
+              <Label htmlFor="designation">Designation</Label>
+              <Select onValueChange={(value) => setValue("designation", value)}>
+                <SelectTrigger id="designation">
+                  <SelectValue placeholder="Select your designation" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    <SelectLabel>Designations</SelectLabel>
+                    <SelectItem value="Full Stack Developer">Full Stack Developer</SelectItem>
+                    <SelectItem value="Backend Developer">Backend Developer</SelectItem>
+                    <SelectItem value="Frontend Developer">Frontend Developer</SelectItem>
+                    <SelectItem value="UI/UX Developer">UI/UX Developer</SelectItem>
+                    <SelectItem value="Graphic Designer">Graphic Designer</SelectItem>
+                    <SelectItem value="AI Engineer">AI Engineer</SelectItem>
+                    <SelectItem value="EGTC">EGTC</SelectItem>
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+              {errors.designation && (
+                <p className="text-sm text-red-500">{errors.designation.message}</p>
+              )}
+            </div>
+
             <div className="space-y-2">
               <Label htmlFor="experience">Years of Experience</Label>
               <Input
